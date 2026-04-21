@@ -1,0 +1,412 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu de Ejercicios JavaScript</title>
+  <style>
+    :root {
+      --bg-1: #e9f2ff;
+      --bg-2: #f6ffea;
+      --card: rgba(255, 255, 255, 0.9);
+      --text-main: #1e2a39;
+      --text-soft: #45596f;
+      --accent: #1363df;
+      --accent-soft: #dbeafe;
+      --border: rgba(19, 99, 223, 0.18);
+      --shadow: 0 20px 40px rgba(20, 42, 86, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", "Trebuchet MS", sans-serif;
+      color: var(--text-main);
+      background:
+        radial-gradient(circle at 10% 20%, #d9e9ff 0%, transparent 35%),
+        radial-gradient(circle at 85% 80%, #dff6c8 0%, transparent 30%),
+        linear-gradient(130deg, var(--bg-1) 0%, var(--bg-2) 100%);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .card {
+      width: min(1180px, 100%);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+      backdrop-filter: blur(6px);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: #0f3d89;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.02em;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      line-height: 1.15;
+    }
+
+    .subtitle {
+      margin-top: 10px;
+      margin-bottom: 0;
+      color: var(--text-soft);
+      font-size: 1.02rem;
+    }
+
+    .meta {
+      margin-top: 8px;
+      font-weight: 600;
+      color: #0f3d89;
+    }
+
+    .workspace {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: minmax(220px, 290px) minmax(280px, 340px) minmax(0, 1fr);
+      gap: 14px;
+    }
+
+    .panel-box {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 12px;
+      min-height: 480px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel-box h2 {
+      margin: 0 0 8px;
+      font-size: 1.02rem;
+      color: var(--accent);
+    }
+
+    .menu-status {
+      margin: 0 0 10px;
+      color: #1e4068;
+      font-size: 0.92rem;
+      font-weight: 600;
+      background: rgba(19, 99, 223, 0.08);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 10px;
+    }
+
+    #menu-list {
+      display: grid;
+      gap: 10px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .menu-level {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.88);
+    }
+
+    .menu-level h3 {
+      margin: 0 0 6px;
+      font-size: 0.95rem;
+      color: #1d4d8f;
+    }
+
+    .menu-btn {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #ffffff;
+      color: #27425f;
+      font-size: 0.86rem;
+      text-align: left;
+      padding: 8px 10px;
+      margin-top: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .menu-btn:hover {
+      border-color: #6ea4ff;
+      background: #f4f8ff;
+    }
+
+    .menu-btn.is-active {
+      border-color: #1363df;
+      background: #eaf2ff;
+      color: #103e85;
+      font-weight: 700;
+    }
+
+    .input-subtitle {
+      margin: 0 0 8px;
+      font-size: 0.93rem;
+      color: #1d4d8f;
+      font-weight: 700;
+    }
+
+    .input-guide {
+      margin: 0 0 10px;
+      font-size: 0.86rem;
+      line-height: 1.35;
+      color: var(--text-soft);
+      min-height: 40px;
+    }
+
+    #input-fields-wrapper {
+      display: grid;
+      gap: 8px;
+      overflow: auto;
+      max-height: 270px;
+      padding-right: 4px;
+    }
+
+    .form-row {
+      border: 1px solid #d7e2f0;
+      border-radius: 10px;
+      background: #ffffff;
+      padding: 8px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 0.82rem;
+      color: #284666;
+      font-weight: 700;
+    }
+
+    .field-input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.88rem;
+      color: #223950;
+      background: #ffffff;
+    }
+
+    .row-remove-btn {
+      justify-self: end;
+      border: 1px solid #b4c8e3;
+      border-radius: 8px;
+      padding: 5px 8px;
+      font-size: 0.78rem;
+      background: #f8fbff;
+      color: #3a5879;
+      cursor: pointer;
+    }
+
+    .input-note {
+      margin: 0;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #f5f9ff;
+      color: #375170;
+      font-size: 0.88rem;
+    }
+
+    .input-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .action-btn {
+      border: 1px solid #1363df;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 0.84rem;
+      cursor: pointer;
+      font-weight: 700;
+      background: #ffffff;
+      color: #184a9d;
+    }
+
+    .action-btn.primary {
+      background: #1363df;
+      color: #ffffff;
+    }
+
+    .mini-help {
+      margin-top: 8px;
+      font-size: 0.78rem;
+      color: #566a7e;
+      line-height: 1.35;
+    }
+
+    #exercise-output {
+      display: grid;
+      gap: 8px;
+      align-content: start;
+      max-height: 430px;
+      overflow: auto;
+      padding-right: 6px;
+    }
+
+    .output-line {
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid #d7e2f0;
+      background: #ffffff;
+      color: #243444;
+      font-size: 0.9rem;
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+
+    .output-warn {
+      border-color: #facc15;
+      background: #fffbeb;
+      color: #7a5a00;
+    }
+
+    .output-error {
+      border-color: #fca5a5;
+      background: #fef2f2;
+      color: #8f1d1d;
+    }
+
+    .output-input {
+      border-color: #bfdbfe;
+      background: #eff6ff;
+      color: #1e3a5f;
+    }
+
+    .output-table {
+      margin: 0;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #d7e2f0;
+      background: #f8fbff;
+      font-size: 0.86rem;
+      color: #243444;
+      overflow-x: auto;
+    }
+
+    @media (max-width: 1020px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .panel-box {
+        min-height: auto;
+      }
+
+      #input-fields-wrapper,
+      #exercise-output,
+      #menu-list {
+        max-height: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <span class="badge">JavaScript - Primer Trabajo</span>
+    <h1>Ejercicios JavaScript</h1>
+    <p class="subtitle">Selecciona un ejercicio, completa los campos por separado y pulsa Ejecutar.</p>
+    <p class="meta">Realizado por: Andry Samantha Franco Mota.</p>
+
+    <section class="workspace">
+      <article class="panel-box">
+        <h2>Menu Principal</h2>
+        <p id="menu-status" class="menu-status">Cargando ejercicios...</p>
+        <div id="menu-list"></div>
+      </article>
+
+      <article class="panel-box">
+        <h2>Ingreso de Datos</h2>
+        <p id="selected-exercise-title" class="input-subtitle">Selecciona un ejercicio</p>
+        <p id="input-guide" class="input-guide">Completa los datos para ejecutar el ejercicio.</p>
+
+        <div id="variant-wrap" style="display: none; margin-bottom: 8px;">
+          <label for="loop-variant" class="field-label">Variante de bucle (Nivel 2)</label>
+          <select id="loop-variant" class="field-input">
+            <option value="for">for</option>
+            <option value="while">while</option>
+            <option value="do-while">do-while</option>
+          </select>
+        </div>
+
+        <div id="input-fields-wrapper"></div>
+
+        <div id="list-controls" style="display: none; margin-top: 8px;">
+          <button id="add-input-row-btn" class="action-btn secondary" type="button">Agregar otro dato</button>
+        </div>
+
+        <div class="input-actions">
+          <button id="run-exercise-btn" class="action-btn primary" type="button">Ejecutar</button>
+          <button id="clear-input-btn" class="action-btn secondary" type="button">Limpiar campos</button>
+        </div>
+
+        <p class="mini-help">Si deseas simular cancelar una entrada, escribe <code>[cancel]</code> en un campo.</p>
+      </article>
+
+      <article class="panel-box">
+        <h2>Resultados</h2>
+        <div id="exercise-output"></div>
+      </article>
+    </section>
+  </main>
+
+  <script src="./js/core/registry.js" defer></script>
+  <script src="./js/core/utils.js" defer></script>
+
+  <script src="./js/ejercicios/nivel1/01_validador_edad.js" defer></script>
+  <script src="./js/ejercicios/nivel1/02_calculadora_helados.js" defer></script>
+  <script src="./js/ejercicios/nivel1/03_par_impar.js" defer></script>
+  <script src="./js/ejercicios/nivel1/04_dia_semana.js" defer></script>
+  <script src="./js/ejercicios/nivel1/05_calculadora_basica.js" defer></script>
+  <script src="./js/ejercicios/nivel1/06_aprobado_reprobado.js" defer></script>
+  <script src="./js/ejercicios/nivel1/07_conversor_moneda.js" defer></script>
+
+  <script src="./js/ejercicios/nivel2/08_cuenta_regresiva.js" defer></script>
+  <script src="./js/ejercicios/nivel2/09_suma_acumulativa.js" defer></script>
+  <script src="./js/ejercicios/nivel2/10_buscador_multiplos.js" defer></script>
+  <script src="./js/ejercicios/nivel2/11_clave_maestra.js" defer></script>
+  <script src="./js/ejercicios/nivel2/12_tabla_potencias.js" defer></script>
+  <script src="./js/ejercicios/nivel2/13_filtro_positivos.js" defer></script>
+
+  <script src="./js/ejercicios/nivel3/14_array_compras.js" defer></script>
+  <script src="./js/ejercicios/nivel3/15_buscador_nombres.js" defer></script>
+  <script src="./js/ejercicios/nivel3/16_objeto_auto.js" defer></script>
+  <script src="./js/ejercicios/nivel3/17_lista_estudiantes.js" defer></script>
+  <script src="./js/ejercicios/nivel3/18_carrito_descuento.js" defer></script>
+  <script src="./js/ejercicios/nivel3/19_menu_infinito.js" defer></script>
+  <script src="./js/ejercicios/nivel3/20_reemplazo_array.js" defer></script>
+
+  <script src="./js/core/menu.js" defer></script>
+  <script defer>
+    window.addEventListener("load", function () {
+      if (window.ExercisesApp && window.ExercisesApp.menu) {
+        window.ExercisesApp.menu.start();
+      } else {
+        console.error("No se pudo iniciar el menu.");
+      }
+    });
+  </script>
+</body>
+</html>
